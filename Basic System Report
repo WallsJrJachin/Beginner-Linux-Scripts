@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "=== System Report ==="
+echo "Date: $(date)"
+echo "Hostname: $(hostname)"
+echo "Uptime: $(uptime -p)"
+echo "Memory Usage:"
+free -h
+echo "Disk Usage:"
+df -h
+echo "Active Users:"
+who
