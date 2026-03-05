@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# =============================
+# BatchFileTransfer.sh
+# Moves files from a source folder to a destination folder
+# Supports prompts, defaults, and any file type
+# =============================
+
+# Prompt for source folder (default: ~/Downloads)
+read -p "Source folder [~/Downloads]: " SRC
+SRC=${SRC:-~/Downloads}
+
+# Prompt for destination folder (default: ~/Documents/BatchTransfers)
+read -p "Destination folder [~/Documents/BatchTransfers]: " DEST
+DEST=${DEST:-~/Documents/BatchTransfers}
+
+# Prompt for file extension (default: txt)
+read -p "File extension (e.g., txt, jpg) [txt]: " EXT
+EXT=${EXT:-txt}
+
+# Create destination folder if it doesn't exist
+mkdir -p "$DEST"
+
+# Move files
+mv "$SRC"/*."$EXT" "$DEST" 2>/dev/null
+
+# Feedback
+COUNT=$(ls "$DEST"/*."$EXT" 2>/dev/null | wc -l)
+echo "Moved $COUNT .$EXT file(s) from $SRC to $DEST"
