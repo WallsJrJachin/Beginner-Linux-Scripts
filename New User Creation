@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# =========================================
+# Beginner Linux User Management Script
+# =========================================
+# Adds a new user, assigns permissions, 
+# creates default directories, and ensures
+# the user sets their own password securely.
+# Must be run as root.
+# =========================================
+
+# Check for root privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "Error: Please run this script as root."
+  exit 1
+fi
+
+# Prompt for new username
+read -p "Enter the new username: " USERNAME
+if [ -z "$USERNAME" ]; then
+  echo "Error: Username cannot be empty."
+  exit 1
+fi
+
+# Prompt for role/permission level
+echo "Select role:"
+echo "1) Admin (sudo privileges)"
+echo "2) Standard User"
+read -p "Enter 1 or 2: " ROLE
+
+# Create user with home directory
+useradd -m "$USERNAME"
+
+# Force the new user to set their own password at first login
+passwd -e "$USERNAME"
+
+# Assign appropriate group based on role
+case "$ROLE" in
+  1)
+    usermod -aG sudo "$USERNAME"
+    echo "$USERNAME has been added to the sudo group (admin privileges)."
+    ;;
+  2)
+    echo "$USERNAME is a standard user."
+    ;;
+  *)
+    echo "Invalid role selection. No extra permissions assigned."
+    ;;
+esac
+
+# Create default directories in the user's home
+mkdir -p /home/$USERNAME/projects /home/$USERNAME/docs
+chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+echo "Setup complete! $USERNAME must set their password upon first login."
